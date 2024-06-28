@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import models
 from database import engine
 from routers import user, authentication, place, box, camera, notification, websocket
+from fastapi_pagination import add_pagination
 
 app = FastAPI()
 
@@ -25,6 +26,8 @@ app.include_router(box.router)
 app.include_router(camera.router)
 app.include_router(notification.router)
 app.include_router(websocket.router)
+
+add_pagination(app)
 
 manager = websocket.ConnectionManager()
 @app.get('/')

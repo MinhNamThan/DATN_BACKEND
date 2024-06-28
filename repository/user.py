@@ -8,7 +8,7 @@ def get_all(db: Session):
   return users
 
 def create(request: schemas.User, db: Session):
-  new_user =models.User(email=request.email, password=Hash.bcrypt(request.password))
+  new_user =models.User(email=request.email, password=Hash.bcrypt(request.password), phoneNumber=request.phoneNumber, fullName=request.fullName)
   db.add(new_user)
   db.commit()
   db.refresh(new_user)
@@ -32,7 +32,6 @@ def update(id: int, request: schemas.User, db:Session):
 
 def show(id: int, db: Session):
   user =db.query(models.User).filter(models.User.id == id).first()
-  print(user)
   if not user:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'user with id {id} is not available')
   return user
