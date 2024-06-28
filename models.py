@@ -1,6 +1,7 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime
 from database import Base
 from sqlalchemy.orm import relationship
+import datetime
 
 class User(Base):
   __tablename__ = "users"
@@ -42,6 +43,8 @@ class Camera(Base):
   id = Column(Integer, primary_key=True, index=True)
   name = Column(String)
   url = Column(String)
+  detected = Column(Boolean)
+  points = Column(String)
   box_id = Column(Integer, ForeignKey("boxes.id"))
   box = relationship("Box", back_populates="cameras")
   notifications = relationship("Notification", back_populates="camera")
@@ -54,7 +57,7 @@ class Notification(Base):
   description = Column(String)
   videoUrl = Column(String)
   status = Column(String)
-  created_at = Column(String)
+  created_at = Column(DateTime, default=datetime.datetime.now)
   camera_id = Column(Integer, ForeignKey("cameras.id"))
   user_id = Column(Integer, ForeignKey("users.id"))
   camera = relationship("Camera", back_populates="notifications")

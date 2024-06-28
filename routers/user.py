@@ -12,7 +12,6 @@ get_db = database.get_db
 
 @router.get('/')
 def index(db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
-  print(current_user.id)
   return user.get_all(db)
 
 @router.get('/{id}', status_code=200)
