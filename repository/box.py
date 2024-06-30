@@ -24,6 +24,9 @@ def destroy(id: int, db: Session):
   box = db.query(models.Box).filter(models.Box.id == id)
   if not box.first():
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'box with id {id} is not available')
+  cameraExist = db.query(models.Camera).filter(models.Camera.box_id == box.first().id)
+  if cameraExist.first():
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'box have camera is streaming')
   box.delete(synchronize_session=False)
   db.commit()
   return 'done'

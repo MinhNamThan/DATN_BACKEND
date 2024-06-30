@@ -52,8 +52,11 @@ async def delete_camera_at_box(id: int, boxUrl: str):
 async def create(request: schemas.Camera, db: Session):
   new_camera =  models.Camera(name=request.name, url=request.url, box_id=request.box_id, detected=request.detected, points=request.points)
   box =  db.query(models.Box).filter(models.Box.id == request.box_id).first()
+  cameraOld = db.query(models.Camera).filter(models.Camera.url == request.url).first()
   if not box:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'box with id {id} is not available')
+  if box.id == cameraOld.box_id:
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'camera is existed')
   try:
     db.add(new_camera)
     db.commit()
