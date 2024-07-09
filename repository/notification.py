@@ -8,7 +8,7 @@ from fastapi_pagination import paginate
 from sqlalchemy import asc, desc
 
 TWILIO_ACCOUNT_SID='ACe9ccce274c3cfde7896c76a9867f1fa5'
-TWILIO_AUTH_TOKEN = '34e034b21eb2f60833b7e87473ab7267'
+TWILIO_AUTH_TOKEN = '01ae2e6a47c884ad6ac2c8169a06f1ef'
 TWILIO_PHONE_NUMBER = '+14129143633'
 client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
@@ -16,7 +16,7 @@ async def send_message(owner_phone: str, camera_name: str):
     try:
         message = client.messages.create(
             from_=TWILIO_PHONE_NUMBER,
-            body='Phát hiện người từ camera ' + camera_name + ', vui lòng kiểm tra ngay!',
+            body='Phát hiện người từ camera tên ' + camera_name + ', vui lòng kiểm tra ngay!',
             to=owner_phone
         )
         return {"message": "Message sent successfully", "sid": message.sid}
@@ -24,7 +24,6 @@ async def send_message(owner_phone: str, camera_name: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 def get_all(start_date, end_date, db: Session, camera_id: int, user_id: int):
-  print("here")
   if(int(camera_id) < 1 ):
     queryNoti = db.query(models.Notification).filter(models.Notification.user_id == user_id).order_by(desc(models.Notification.created_at))
   else:
@@ -73,3 +72,11 @@ def show(id: int, db: Session, user_id: str):
   if not notification:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'notification with id {id} is not available')
   return notification
+
+def destroy(id: int, db: Session):
+  notification = db.query(models.Notification).filter(models.Notification.id == id)
+  if not notification.first():
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'notification with id {id} is not available')
+  notification.delete(synchronize_session=False)
+  db.commit()
+  return 'done'

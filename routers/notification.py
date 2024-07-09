@@ -30,3 +30,7 @@ def update(db: Session = Depends(get_db), current_user: schemas.User = Depends(o
 @router.get('/{id}', status_code=200, response_model=schemas.NotificationShow)
 def show(id, db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
   return notification.show(id, db, current_user.id)
+
+@router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
+def destroy(id, db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
+  return notification.destroy(id, db)
