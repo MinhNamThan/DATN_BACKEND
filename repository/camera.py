@@ -55,8 +55,9 @@ async def create(request: schemas.Camera, db: Session):
   cameraOld = db.query(models.Camera).filter(models.Camera.url == request.url).first()
   if not box:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'box with id {id} is not available')
-  if box.id == cameraOld.box_id:
-    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'camera is existed')
+  if cameraOld:
+    if box.id == cameraOld.box_id:
+      raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'camera is existed')
   try:
     db.add(new_camera)
     db.commit()
