@@ -15,7 +15,7 @@ def get_all_with_box(db: Session, box_id: int):
   return cameras
 
 async def create_camera_at_box(camera: schemas.CameraBox, boxUrl: str, user_id: int):
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(headers={'ngrok-skip-browser-warning': 'true'}) as client:
       try:
           response = await client.post((boxUrl + 'camera'), json=camera.dict())
           response.raise_for_status()  # Raise an exception for 4xx/5xx responses
@@ -27,7 +27,7 @@ async def create_camera_at_box(camera: schemas.CameraBox, boxUrl: str, user_id: 
           raise HTTPException(status_code=500, detail=f"Internal server error: {str(exc)}")
 
 async def update_camera_at_box(camera: schemas.CameraBox, id, boxUrl: str, user_id: int):
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(headers={'ngrok-skip-browser-warning': 'true'}) as client:
       try:
           print("update")
           print(camera.dict())
@@ -41,7 +41,7 @@ async def update_camera_at_box(camera: schemas.CameraBox, id, boxUrl: str, user_
           raise HTTPException(status_code=500, detail=f"Internal server error: {str(exc)}")
 
 async def delete_camera_at_box(id: int, boxUrl: str):
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(headers={'ngrok-skip-browser-warning': 'true'}) as client:
       try:
           await client.delete((boxUrl + 'camera/' + str(id)))
       except httpx.HTTPStatusError as exc:
